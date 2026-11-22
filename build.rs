@@ -43,6 +43,8 @@ fn main() {
 		.clang_arg(format!("-I{}", nrfxlib_path))
 		// Point to our special local headers
 		.clang_arg("-I./include")
+		.clang_arg("-I./third_party/nordic/nrfxlib/crypto/nrf_cc312_platform/include")
+		.clang_arg("-I./third_party/nordic/nrfxlib/crypto/nrf_cc312_mbedcrypto/include")
 		// Add extra paths that the C files assume are searched
 		.clang_arg("-I./third_party/nordic/nrfxlib/crypto/nrf_cc310_platform/include")
 		.clang_arg("-I./third_party/nordic/nrfxlib/crypto/nrf_cc310_mbedcrypto/include")
@@ -215,21 +217,34 @@ fn main() {
 		println!("cargo:rustc-link-lib=static=modem");
 	}
 
+	let sdk_root = Path::new(&nrfxlib_path);
 	println!(
-		"cargo:rustc-link-search={}",
-		Path::new(&nrfxlib_path)
-			.join("crypto/nrf_oberon/lib/cortex-m33/hard-float")
-			.display()
+		"cargo::metadata=sdk_root={}",
+		Path::new(env!("CARGO_MANIFEST_DIR")).join("third_party/nordic/nrfxlib").display()
 	);
-	// the no interrupt version of the library does not use mutexes, it is easier to handle
 	println!(
 		"cargo:rustc-link-search={}",
-		Path::new(&nrfxlib_path)
-			.join("crypto/nrf_cc310_platform/lib/cortex-m33/hard-float/no-interrupts")
-			.display()
+		sdk_root.join("crypto/nrf_oberon/lib/cortex-m33/hard-float").display()
 	);
 	println!("cargo:rustc-link-lib=static=oberon_3.0.19");
-	println!("cargo:rustc-link-lib=static=nrf_cc310_platform_0.9.22");
+	#[cfg(feature = "cc312")]
+	{
+		let platform = sdk_root.join("crypto/nrf_cc312_platform/lib/cortex-m33/hard-float/no-interrupts");
+		let crypto = sdk_root.join("crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/hard-float/no-interrupts");
+		println!("cargo:rustc-link-search={}", platform.display());
+		println!("cargo:rustc-link-search={}", crypto.display());
+		println!("cargo:rustc-link-lib=static=nrf_cc312_platform_0.9.22");
+		println!("cargo:rustc-link-lib=static=nrf_cc312_core_0.9.22");
+		println!("cargo:rustc-link-lib=static=nrf_cc312_psa_crypto_0.9.22");
+	}
+	#[cfg(not(feature = "cc312"))]
+	{
+		println!(
+			"cargo:rustc-link-search={}",
+			sdk_root.join("crypto/nrf_cc310_platform/lib/cortex-m33/hard-float/no-interrupts").display()
+		);
+		println!("cargo:rustc-link-lib=static=nrf_cc310_platform_0.9.22");
+	}
 
 	#[cfg(any(feature = "nrf_fuel_gauge", feature = "nrf_fuel_gauge_primary_cell"))]
 	{

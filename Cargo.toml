@@ -1,6 +1,7 @@
 [package]
 name = "nrfxlib-sys"
 version = "4.0.0+3.4.0"
+links = "nrfxlib_sys"
 authors = [
 	"Jonathan 'theJPster' Pallant <github@thejpster.org.uk>",
 	"42 Technology Ltd <jonathan.pallant@42technology.com>",
@@ -23,8 +24,8 @@ include = [
 	"third_party/nordic/nrfxlib/nrf_modem/lib/cellular/nrf9160/hard-float/libmodem_log.a",
 	"third_party/nordic/nrfxlib/nrf_modem/lib/cellular/nrf9120/hard-float/libmodem.a",
 	"third_party/nordic/nrfxlib/nrf_modem/lib/cellular/nrf9120/hard-float/libmodem_log.a",
-	"third_party/nordic/nrfxlib/nrf_modem/lib/dect_phy/nrf9120/hard-float/libmodem.a",
-	"third_party/nordic/nrfxlib/nrf_modem/lib/dect_phy/nrf9120/hard-float/libmodem_log.a",
+	"third_party/nordic/nrfxlib/nrf_modem/lib/dect_phy/libmodem.a",
+	"third_party/nordic/nrfxlib/nrf_modem/lib/dect_phy/libmodem_log.a",
 	"third_party/nordic/nrfxlib/nrf_modem/lib/dect/nrf9120/hard-float/libmodem.a",
 	"third_party/nordic/nrfxlib/nrf_modem/lib/dect/nrf9120/hard-float/libmodem_log.a",
 	"third_party/nordic/nrfxlib/nrf_modem/include/**",
@@ -33,8 +34,15 @@ include = [
 	"third_party/nordic/nrfxlib/crypto/nrf_cc310_platform/include/**",
 	"third_party/nordic/nrfxlib/crypto/nrf_cc310_platform/license.txt",
 	"third_party/nordic/nrfxlib/crypto/nrf_cc310_platform/lib/cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.22.a",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_platform/include/**",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_platform/license.txt",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_platform/lib/cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.22.a",
 	"third_party/nordic/nrfxlib/crypto/nrf_cc310_mbedcrypto/include/**",
 	"third_party/nordic/nrfxlib/crypto/nrf_cc310_mbedcrypto/license.txt",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_mbedcrypto/include/**",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_mbedcrypto/license.txt",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/hard-float/no-interrupts/libnrf_cc312_core_0.9.22.a",
+	"third_party/nordic/nrfxlib/crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/hard-float/no-interrupts/libnrf_cc312_psa_crypto_0.9.22.a",
 	"third_party/nordic/nrfxlib/crypto/nrf_oberon/lib/cortex-m33/hard-float/**",
 	"third_party/nordic/nrfxlib/crypto/nrf_oberon/include/**",
 	"third_party/nordic/nrfxlib/crypto/nrf_oberon/license.txt",
@@ -92,7 +100,8 @@ nrf9161 = ["nrf9120"]
 nrf9120 = []
 ## The nRF5340 has no modem: the modem headers and library are left out.
 nrf5340 = []
-
+## Links CC312 verifier and platform archives. Requires nrf5340.
+cc312 = ["nrf5340"]
 ## Bindings and link for the nRF Fuel Gauge library (secondary cell; wins if both are set)
 nrf_fuel_gauge = []
 ## Same, for the primary-cell variant
